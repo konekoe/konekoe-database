@@ -1,6 +1,6 @@
 {
   "name": "konekoe-database",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Konekoe mongodb database",
   "main": "index.js",
   "scripts": {
