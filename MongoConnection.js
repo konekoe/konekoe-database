@@ -8,6 +8,7 @@ const dbOptions =
                 user: process.env.DATABASE_USER,
                 pass: process.env.DATABASE_PASS,
                 useNewUrlParser: true,
+                createIndexes: true
               }
 
 const MongoConnection = (uri, options) => {
