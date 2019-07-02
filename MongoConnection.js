@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
-const fs = require('fs');
 
 //Connect to database
-const dbUri = "mongodb://127.0.0.1:27017/testDb2";
+const dbUri = process.env.DATABASE_URI;
 const dbOptions =
               {
-                auth: { authSource: "admin" },
-                user: "superuser",
-                pass: fs.readFileSync("./databasePass", 'utf8').trim(),
-                useNewUrlParser: true
+                auth: { authSource: process.env.DATABASE_AUTH },
+                user: process.env.DATABASE_USER,
+                pass: process.env.DATABASE_PASS,
+                useNewUrlParser: true,
               }
 
 const MongoConnection = (uri, options) => {
@@ -16,4 +15,4 @@ const MongoConnection = (uri, options) => {
     .then(() => console.log("Connected to database."));
 }
 
-module.exports = MongoConnection(dbUri,dbOptions);
+module.exports = MongoConnection(dbUri, dbOptions);
