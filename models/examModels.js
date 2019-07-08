@@ -14,7 +14,7 @@ var configSchema = Schema({
   courseCode: String,
   examCode: String,
   restrictedUrls: [{ type: String }],
-  restrictionType: [{ type: String, required: true, default: "none", enum: ["blacklist", "whitelist", "none"] }],
+  restrictionType: { type: String, required: true, default: "none", enum: ["blacklist", "whitelist", "none"] },
   files: [{ type: ObjectID, ref: 'File' }],
   scrshInt: { type: Number, default: 0, min: 0 },
   examUrl: { type: String, required: true },
