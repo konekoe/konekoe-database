@@ -13,10 +13,10 @@ var fileSchema = Schema({
 var configSchema = Schema({
   courseCode: String,
   examCode: String,
-  blacklist: [{type: String}],
-  whitelist: [{type: String}],
-  files: [{type: ObjectID, ref: 'File'}],
-  scrshInt: {type: Number, default: 0, min: 0},
+  restrictedUrls: [{ type: String }],
+  restrictionType: [{ type: String, required: true, default: "none", enum: ["blacklist", "whitelist", "none"] }],
+  files: [{ type: ObjectID, ref: 'File' }],
+  scrshInt: { type: Number, default: 0, min: 0 },
   examUrl: { type: String, required: true },
   examStart: { type: Date, required: true },
   examEnd: { type: Date, required: true }
@@ -39,8 +39,8 @@ configSchema.pre('remove', { document: true }, async function(next) {
 var examSchema = Schema({
   examCode: { type: String, unique: true, required: true },
   courseCode: String,
-  authOptions: [{type: String}],
-  attendants: [{type: ObjectID, ref: 'Student'}],
+  authOptions: [{ type: String }],
+  attendants: [{ type: ObjectID, ref: 'Student' }],
   config: { type: ObjectID, ref: 'Config', required: true },
   startDate: { type: Date, required: true},
   wsPort: Number,
