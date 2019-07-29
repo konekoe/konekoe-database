@@ -1,45 +1,52 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
-var ObjectID = Schema.Types.ObjectId;
+const Schema = mongoose.Schema;
+const ObjectID = Schema.Types.ObjectId;
 
-var authOptionSchema = Schema({
-  title: {type: String, unique: true, required: true},
-  formPage: {type: String, required: true}
+const authOptionSchema = Schema({
+  title: { type: String, unique: true, required: true },
+  formPage: { type: String, required: true }
 });
 
 //This Schema is used to tie together documents associated with each login strategy.
-var userSchema = Schema({
-  accounts: [{id: {type: ObjectID, required: true}, userType: {type: String, required: true, enum: ['local', 'dummy', 'haka']}}],
+const userSchema = Schema({
+  privileges: { type: String, required: true, enum: ['student', 'assistant', 'teacher', 'maintainer'], default: 'student' }, //Highest level of accounts is chosen
+  aliases: [{
+     id: { type: ObjectID, required: true },
+     userType: { type: String, required: true, enum: ['local', 'dummy', 'haka'] }
+  }],
 });
 
-var localUserSchema = Schema({
-  username: {type: String, unique: true},
+//An alias corresponds to a login method. Each alias has to have at least these properties;
+const userAliasSchema = Schema({
+  username: { type: String, unique: true },
+  parentUser: { type: ObjectID, ref: 'User', required: true },
+  privileges: { type: String, required: true, enum: ['student', 'assistant', 'teacher', 'maintainer'], default: 'student' }
+});
+
+const localAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
-  parentUser: {type: ObjectID, ref: 'User', required: true},
+  privileges: { default: "maintainer", enum: ["maintainer"] }
 });
 
-var dummyUserSchema = Schema({
-  //StudentId
-  username: {type: String, unique: true},
-  student: {type: ObjectID, ref: 'Student', required: true},
-  parentUser: {type: ObjectID, ref: 'User', required: true}
+const dummyAliasSchema = Schema({
+  student: { type: ObjectID, ref: 'Student', required: true },
+  privileges: { default: "student", enum: ["student"] }
 });
 
 //Add desired eduPerson fields here.
 //Remember to add these fields to the parser as well.
-var hakaUserSchema = Schema({
-  hakaId: {type: String, unique: true, required: true},
-  username: {type: String},
-  student: {type: ObjectID, ref: 'Student'},
-  parentUser: {type: ObjectID, ref: 'User', required: true}
-})
+const hakaAliasSchema = Schema({
+  hakaId: { type: String, unique: true, required: true },
+  student: { type: ObjectID, ref: 'Student' },
+});
 
-var User = mongoose.model('User', userSchema);
-var DummyUser = mongoose.model('DummyUser', dummyUserSchema);
-var LocalUser = mongoose.model('LocalUser', localUserSchema);
-var HakaUser = mongoose.model('HakaUser', hakaUserSchema);
-var AuthOption = mongoose.model('AuthOption', authOptionSchema);
+const User = mongoose.model('User', userSchema);
+const UserAlias = mongoose.model('UserAlias', userAliasSchema);
+const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
+const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
+const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
+const AuthOption = mongoose.model('AuthOption', authOptionSchema);
 
-module.exports = {User, DummyUser, LocalUser, HakaUser, AuthOption};
+module.exports = { User, DummyAlias, LocalAlias, HakaAlias, AuthOption };
