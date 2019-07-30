@@ -19,7 +19,8 @@ const userSchema = Schema({
 
 //An alias corresponds to a login method. Each alias has to have at least these properties;
 const userAliasSchema = Schema({
-  username: { type: String, unique: true },
+  username: { type: String }, //student id etc.
+  userId: { type: String, unique: true },
   parentUser: { type: ObjectID, ref: 'User', required: true },
   privileges: { type: String, required: true, enum: ['student', 'assistant', 'teacher', 'maintainer'], default: 'student' }
 });
@@ -27,7 +28,7 @@ const userAliasSchema = Schema({
 const localAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
-  privileges: { default: "maintainer", enum: ["maintainer"] }
+  privileges: { type: String, default: "maintainer", enum: ["maintainer"] }
 });
 
 const dummyAliasSchema = Schema({
@@ -49,4 +50,10 @@ const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
 const AuthOption = mongoose.model('AuthOption', authOptionSchema);
 
-module.exports = { User, DummyAlias, LocalAlias, HakaAlias, AuthOption };
+module.exports = {
+  User,
+  UserAlias, 
+  DummyAlias,
+  LocalAlias,
+  HakaAlias,
+  AuthOption };
