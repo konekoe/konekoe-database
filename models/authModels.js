@@ -33,7 +33,7 @@ const localAliasSchema = Schema({
 
 const dummyAliasSchema = Schema({
   student: { type: ObjectID, ref: 'Student', required: true },
-  privileges: { default: "student", enum: ["student"] }
+  privileges: { type: String, default: "student", enum: ["student"] }
 });
 
 //Add desired eduPerson fields here.
@@ -52,7 +52,7 @@ const AuthOption = mongoose.model('AuthOption', authOptionSchema);
 
 module.exports = {
   User,
-  UserAlias, 
+  UserAlias,
   DummyAlias,
   LocalAlias,
   HakaAlias,
