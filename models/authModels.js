@@ -36,7 +36,6 @@ const dummyAliasSchema = Schema({
 //Add desired eduPerson fields here.
 //Remember to add these fields to the parser as well.
 const hakaAliasSchema = Schema({
-  hakaId: { type: String, unique: true, required: true },
   student: { type: ObjectID, ref: 'Student' },
 });
 
