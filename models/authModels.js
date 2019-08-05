@@ -8,30 +8,66 @@ const authOptionSchema = Schema({
   formPage: { type: String, required: true }
 });
 
+const AuthOption = mongoose.model('AuthOption', authOptionSchema);
+
+const groupSchema = Schema({
+  courses: [{ type: ObjectID, ref: 'Course' }],
+  name: { type: String, unique: true, required: true }
+});
+
+const Group = mongoose.model('Group', groupSchema);
+
 //This Schema is used to tie together documents associated with each login strategy.
 const userSchema = Schema({
-  privileges: { type: String, required: true, enum: ['student', 'assistant', 'teacher', 'maintainer'], default: 'student' }, //Highest level of accounts is chosen
+  permissions: { type: String, required: true, enum: ['client', 'staff', 'maintainer'], default: 'client' }, //Highest level from aliases is chosen
+  groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, persmissions: { type: String, required: true, enum: ['visitor', 'editor', 'manager'] } }],
   aliases: [{ type: ObjectID, required: true }],
 });
+
+const User = mongoose.model('User', userSchema);
+
+userSchema.virtual('userPermissions').get(function () {
+  return ['client', 'staff', 'maintainer'].indexOf(this.permissions);
+});
+
+//Use this to determine which groups a use belongs to and what is their numerical auth level.
+//NOTE: maintainers are managers of all groups.
+userSchema.methods.getGroups = function () {
+  const persmissionsEnum = ['visitor', 'editor', 'manager'];
+
+  return (this.userPermissions > 1) ?
+    Group.find({}).then(groups => groups.map(group => { return { group, permissions: persmissionsEnum.length } }))
+    :
+    Promise.all(this.groups.map(({ group, persmissions }) => {
+      return { group: Group.findById(group), permissions: persmissionsEnum.indexOf(permissions) }
+    }));
+};
+
 
 //An alias corresponds to a login method. Each alias has to have at least these properties;
 const userAliasSchema = Schema({
   username: { type: String }, //student id etc.
   userId: { type: String, unique: true },
   parentUser: { type: ObjectID, ref: 'User', required: true },
-  privileges: { type: String, required: true, enum: ['student', 'assistant', 'teacher', 'maintainer'], default: 'student' }
+  permissions: { type: String, required: true, enum: ['client', 'staff', 'maintainer'], default: 'client' }
 });
+
+const UserAlias = mongoose.model('UserAlias', userAliasSchema);
 
 const localAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
-  privileges: { type: String, default: "maintainer", enum: ["maintainer"] }
+  permissions: { type: String, default: 'maintainer', enum: ['maintainer'] }
 });
+
+const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 
 const dummyAliasSchema = Schema({
   student: { type: ObjectID, ref: 'Student', required: true },
-  privileges: { type: String, default: "student", enum: ["student"] }
+  permissions: { type: String, default: 'client', enum: ['client'] }
 });
+
+const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
 
 //Add desired eduPerson fields here.
 //Remember to add these fields to the parser as well.
@@ -39,12 +75,8 @@ const hakaAliasSchema = Schema({
   student: { type: ObjectID, ref: 'Student' },
 });
 
-const User = mongoose.model('User', userSchema);
-const UserAlias = mongoose.model('UserAlias', userAliasSchema);
-const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
-const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
-const AuthOption = mongoose.model('AuthOption', authOptionSchema);
+
 
 module.exports = {
   User,
@@ -52,4 +84,5 @@ module.exports = {
   DummyAlias,
   LocalAlias,
   HakaAlias,
-  AuthOption };
+  AuthOption
+};
