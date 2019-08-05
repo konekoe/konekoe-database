@@ -24,8 +24,6 @@ const userSchema = Schema({
   aliases: [{ type: ObjectID, required: true }],
 });
 
-const User = mongoose.model('User', userSchema);
-
 userSchema.virtual('userPermissions').get(function () {
   return ['client', 'staff', 'administrator', 'maintainer'].indexOf(this.permissions);
 });
@@ -36,12 +34,15 @@ userSchema.methods.getGroups = function () {
   const persmissionsEnum = ['visitor', 'editor', 'manager'];
 
   return (this.userPermissions > 1) ?
-    Group.find({}).then(groups => groups.map(group => { return { group, permissions: persmissionsEnum.length } }))
-    :
-    Promise.all(this.groups.map(({ group, persmissions }) => {
-      return { group: Group.findById(group), permissions: persmissionsEnum.indexOf(permissions) }
-    }));
+  Group.find({}).then(groups => groups.map(group => { return { group, permissions: persmissionsEnum.length } }))
+  :
+  Promise.all(this.groups.map(({ group, persmissions }) => {
+    return { group: Group.findById(group), permissions: persmissionsEnum.indexOf(permissions) }
+  }));
 };
+
+const User = mongoose.model('User', userSchema);
+
 
 
 //An alias corresponds to a login method. Each alias has to have at least these properties;
