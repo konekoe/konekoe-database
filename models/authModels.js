@@ -19,7 +19,7 @@ const Group = mongoose.model('Group', groupSchema);
 
 //This Schema is used to tie together documents associated with each login strategy.
 const userSchema = Schema({
-  permissions: { type: String, required: true, enum: ['client', 'staff', 'maintainer'], default: 'client' }, //Highest level from aliases is chosen
+  permissions: { type: String, required: true, enum: ['client', 'staff', 'administrator', 'maintainer'], default: 'client' }, //Highest level from aliases is chosen
   groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, persmissions: { type: String, required: true, enum: ['visitor', 'editor', 'manager'] } }],
   aliases: [{ type: ObjectID, required: true }],
 });
@@ -27,7 +27,7 @@ const userSchema = Schema({
 const User = mongoose.model('User', userSchema);
 
 userSchema.virtual('userPermissions').get(function () {
-  return ['client', 'staff', 'maintainer'].indexOf(this.permissions);
+  return ['client', 'staff', 'administrator', 'maintainer'].indexOf(this.permissions);
 });
 
 //Use this to determine which groups a use belongs to and what is their numerical auth level.
