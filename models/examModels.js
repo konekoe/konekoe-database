@@ -38,7 +38,7 @@ configSchema.pre('remove', { document: true }, async function(next) {
 
 var examSchema = Schema({
   examCode: { type: String, unique: true, required: true },
-  courseCode: String,
+  course: { type: ObjectID, ref: "Course", required: true },
   authOptions: [{ type: String }],
   attendants: [{ type: ObjectID, ref: 'Student' }],
   config: { type: ObjectID, ref: 'Config', required: true },
