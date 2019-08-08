@@ -81,6 +81,7 @@ const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
 
 module.exports = {
   User,
+  Group,
   UserAlias,
   DummyAlias,
   LocalAlias,
