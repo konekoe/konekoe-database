@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const USER_PERMISSIONS = ['client', 'staff', 'admin'];
+const GROUP_PERMISSIONS = ['visitor', 'editor', 'manager'];
+
 const Schema = mongoose.Schema;
 const ObjectID = Schema.Types.ObjectId;
 
@@ -19,26 +22,24 @@ const Group = mongoose.model('Group', groupSchema);
 
 //This Schema is used to tie together documents associated with each login strategy.
 const userSchema = Schema({
-  permissions: { type: String, required: true, enum: ['client', 'staff', 'administrator', 'maintainer'], default: 'client' }, //Highest level from aliases is chosen
-  groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, persmissions: { type: String, required: true, enum: ['visitor', 'editor', 'manager'] } }],
+  permissions: { type: String, required: true, enum: USER_PERMISSIONS, default: 'client' }, //Highest level from aliases is chosen
+  groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, persmissions: { type: String, required: true, enum: GROUP_PERMISSIONS, default: 'visitor' } }],
   aliases: [{ type: ObjectID, required: true }],
 });
 
 userSchema.virtual('userPermissions').get(function () {
-  return ['client', 'staff', 'administrator', 'maintainer'].indexOf(this.permissions);
+  return USER_PERMISSIONS.indexOf(this.permissions);
 });
 
 //Use this to determine which groups a use belongs to and what is their numerical auth level.
 //NOTE: maintainers are managers of all groups.
 userSchema.methods.getGroups = function () {
-  const persmissionsEnum = ['visitor', 'editor', 'manager'];
-
   return (this.userPermissions > 1) ?
-  Group.find({}).then(groups => groups.map(group => { return { group, permissions: persmissionsEnum.length } }))
-  :
-  Promise.all(this.groups.map(({ group, persmissions }) => {
-    return { group: Group.findById(group), permissions: persmissionsEnum.indexOf(permissions) }
-  }));
+    Group.find({}).then(groups => groups.map(group => { return { group, permissions: GROUP_PERMISSIONS.length } }))
+    :
+    Promise.all(this.groups.map(({ group, persmissions }) => {
+      return { group: Group.findById(group), permissions: GROUP_PERMISSIONS.indexOf(permissions) }
+    }));
 };
 
 const User = mongoose.model('User', userSchema);
@@ -64,8 +65,7 @@ const localAliasSchema = Schema({
 const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 
 const dummyAliasSchema = Schema({
-  student: { type: ObjectID, ref: 'Student', required: true },
-  permissions: { type: String, default: 'client', enum: ['client'] }
+  student: { type: ObjectID, ref: 'Student', required: true }
 });
 
 const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
