@@ -35,10 +35,10 @@ userSchema.virtual('userPermissions').get(function () {
 //NOTE: maintainers are managers of all groups.
 userSchema.methods.getGroups = function () {
   return (this.userPermissions > 1) ?
-    Group.find({}).then(groups => groups.map(group => { return { group, permissions: GROUP_PERMISSIONS.length } }))
+    Group.find({}).then(groups => groups.map(group => { return { group, permissions: { name: "admin", GROUP_PERMISSIONS.length } } }))
     :
     Promise.all(this.groups.map(({ group, persmissions }) => {
-      return { group: Group.findById(group), permissions: GROUP_PERMISSIONS.indexOf(permissions) }
+      return { group: Group.findById(group), permissions: { name: permissions, level: GROUP_PERMISSIONS.indexOf(permissions) } };
     }));
 };
 
