@@ -32,7 +32,7 @@ userSchema.virtual('userPermissions').get(function () {
 });
 
 //Use this to determine which groups a use belongs to and what is their numerical auth level.
-//NOTE: maintainers are managers of all groups.
+//NOTE: admins are managers of all groups.
 userSchema.methods.getGroups = function () {
   return (this.userPermissions > 1) ?
     Group.find({}).then(groups => groups.map(group => { return { group, permissions: { name: "admin", level: GROUP_PERMISSIONS.length } } }))
@@ -51,7 +51,7 @@ const userAliasSchema = Schema({
   username: { type: String }, //student id etc.
   userId: { type: String, unique: true },
   parentUser: { type: ObjectID, ref: 'User', required: true },
-  permissions: { type: String, required: true, enum: ['client', 'staff', 'maintainer'], default: 'client' }
+  permissions: { type: String, required: true, enum: USER_PERMISSIONS, default: 'client' }
 });
 
 const UserAlias = mongoose.model('UserAlias', userAliasSchema);
@@ -59,7 +59,7 @@ const UserAlias = mongoose.model('UserAlias', userAliasSchema);
 const localAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
-  permissions: { type: String, default: 'maintainer', enum: ['maintainer'] }
+  permissions: { type: String, default: 'admin', enum: ['admin'] }
 });
 
 const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
