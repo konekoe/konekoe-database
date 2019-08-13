@@ -23,7 +23,7 @@ const Group = mongoose.model('Group', groupSchema);
 //This Schema is used to tie together documents associated with each login strategy.
 const userSchema = Schema({
   permissions: { type: String, required: true, enum: USER_PERMISSIONS, default: 'client' }, //Highest level from aliases is chosen
-  groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, persmissions: { type: String, required: true, enum: GROUP_PERMISSIONS, default: 'visitor' } }],
+  groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, permissions: { type: String, required: true, enum: GROUP_PERMISSIONS, default: 'visitor' } }],
   aliases: [{ type: ObjectID, required: true }],
 });
 
@@ -37,14 +37,14 @@ userSchema.methods.getGroups = function () {
   return (this.userPermissions > 1) ?
     Group.find({}).then(groups => groups.map(group => { return { group, permissions: { name: "admin", level: GROUP_PERMISSIONS.length } } }))
     :
-    Promise.all(this.groups.map(({ group, persmissions }) => {
+    Promise.all(this.groups.map(({ group, permissions }) => {
       return { group: Group.findById(group), permissions: { name: permissions, level: GROUP_PERMISSIONS.indexOf(permissions) } };
     }));
 };
 
 userSchema.methods.getGroupPermissions = function(id) {
-  const name = this.groups.find(g => g.group === id).permissions;
 
+  const name = this.groups.find(g => g.group.toString() === id.toString()).permissions;
   return { name, level: GROUP_PERMISSIONS.indexOf(name) };
 };
 
