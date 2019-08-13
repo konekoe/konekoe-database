@@ -42,6 +42,12 @@ userSchema.methods.getGroups = function () {
     }));
 };
 
+userSchema.methods.getGroupPermissions = function(id) {
+  const name = this.groups.find(g => g.group === id).permissions;
+
+  return { name, level: GROUP_PERMISSIONS.indexOf(name) };
+};
+
 const User = mongoose.model('User', userSchema);
 
 
