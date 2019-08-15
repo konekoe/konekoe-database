@@ -24,7 +24,7 @@ const Group = mongoose.model('Group', groupSchema);
 const userSchema = Schema({
   permissions: { type: String, required: true, enum: USER_PERMISSIONS, default: 'client' }, //Highest level from aliases is chosen
   groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, permissions: { type: String, required: true, enum: GROUP_PERMISSIONS, default: 'visitor' } }],
-  aliases: [{ type: ObjectID, required: true }],
+  aliases: [{ type: ObjectID, ref: 'UserAlias', required: true }],
 });
 
 userSchema.virtual('userPermissions').get(function () {
