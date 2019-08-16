@@ -37,8 +37,8 @@ userSchema.methods.getGroups = function () {
   return (this.userPermissions > 1) ?
     Group.find({}).then(groups => groups.map(group => { return { group, permissions: { name: "admin", level: GROUP_PERMISSIONS.length } } }))
     :
-    Promise.all(this.groups.map(({ group, permissions }) => {
-      return { group: Group.findById(group), permissions: { name: permissions, level: GROUP_PERMISSIONS.indexOf(permissions) } };
+    Promise.all(this.groups.map(async ({ group, permissions }) => {
+      return { group: await Group.findById(group), permissions: { name: permissions, level: GROUP_PERMISSIONS.indexOf(permissions) } };
     }));
 };
 
