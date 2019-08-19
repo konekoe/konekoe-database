@@ -18,6 +18,13 @@ const groupSchema = Schema({
   name: { type: String, unique: true, required: true }
 });
 
+groupSchema.pre('remove', { document: true }, async function() {
+  await this.populate('courses').execPopulate();
+
+  await Promise.all(this.courses.map(course => course.remove()));
+  
+});
+
 const Group = mongoose.model('Group', groupSchema);
 
 //This Schema is used to tie together documents associated with each login strategy.

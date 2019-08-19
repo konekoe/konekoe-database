@@ -84,16 +84,11 @@ var courseSchema = Schema({
 
 //Handles removal of course documents.
 //NOTE: THIS IS DOCUMENT MIDDLEWARE.
-courseSchema.pre('remove', { document: true }, async function(next) {
+courseSchema.pre('remove', { document: true }, async function() {
 
   await this.populate('exams').execPopulate();
 
-  for (const exam of this.exams) {
-    await exam.remove();
-  }
-
-  next();
-
+  await Promise.all(this.exams.map(exam => exam.remove()));
 });
 
 var Student = mongoose.model('Student', studentSchema);
