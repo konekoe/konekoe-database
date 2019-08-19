@@ -22,7 +22,7 @@ groupSchema.pre('remove', { document: true }, async function() {
   await this.populate('courses').execPopulate();
 
   await Promise.all(this.courses.map(course => course.remove()));
-  
+
 });
 
 const Group = mongoose.model('Group', groupSchema);
@@ -53,6 +53,13 @@ userSchema.methods.getGroupPermissions = function(id) {
 
   const name = this.groups.find(g => g.group.toString() === id.toString()).permissions;
   return { name, level: GROUP_PERMISSIONS.indexOf(name) };
+};
+
+userSchema.methods.hasGroupPermissions = function(groupId, permissionLevel) {
+  const permissions = this.getGroupPermissions(groupId);
+
+  return permissions && permissions.level >=  GROUP_PERMISSIONS.indexOf(permissionLevel);
+
 };
 
 const User = mongoose.model('User', userSchema);
