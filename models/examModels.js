@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const { AuthOption } = require("./authModels.js");
 
 var Schema = mongoose.Schema;
 var ObjectID = Schema.Types.ObjectId;
@@ -53,6 +54,15 @@ var examSchema = Schema({
 
 examSchema.methods.timeToStart = function() {
   return Date.parse(this.startDate) - Date.now();
+}
+
+examSchema.methods.getLoginOptions = async function() {
+  try {
+    return (await AuthOption.find({ title: { $in: this.authOptions } })).map(option => options.formPage);
+  }
+  catch (err) {
+    throw err;
+  }
 }
 
 //Handles removal of exam documents.
