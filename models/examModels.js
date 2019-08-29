@@ -58,7 +58,7 @@ examSchema.methods.timeToStart = function() {
 
 examSchema.methods.getLoginOptions = async function() {
   try {
-    return (await AuthOption.find({ title: { $in: this.authOptions } })).map(option => options.formPage);
+    return (await AuthOption.find({ title: { $in: this.authOptions } })).map(option => option.formPage);
   }
   catch (err) {
     throw err;
