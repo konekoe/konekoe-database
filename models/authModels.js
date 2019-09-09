@@ -87,6 +87,7 @@ const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 const emailAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
+  active: { type: Boolean, default: false, required: true }
 });
 
 const EmailAlias = UserAlias.discriminator('EmailAlias', emailAliasSchema);
@@ -113,5 +114,6 @@ module.exports = {
   DummyAlias,
   LocalAlias,
   HakaAlias,
-  AuthOption
+  AuthOption,
+  EmailAlias
 };
