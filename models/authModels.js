@@ -84,6 +84,13 @@ const localAliasSchema = Schema({
 
 const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 
+const emailAliasSchema = Schema({
+  passwordHash: String,
+  passwordSalt: String,
+});
+
+const EmailAlias = UserAlias.discriminator('EmailAlias', emailAliasSchema);
+
 const dummyAliasSchema = Schema({
   student: { type: ObjectID, ref: 'Student', required: true }
 });
