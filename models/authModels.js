@@ -68,11 +68,14 @@ const User = mongoose.model('User', userSchema);
 
 //An alias corresponds to a login method. Each alias has to have at least these properties;
 const userAliasSchema = Schema({
-  username: { type: String }, //student id etc.
-  userId: { type: String, unique: true },
+  username: { type: String, unique: true }, //student id or some other unique identifier.
   parentUser: { type: ObjectID, ref: 'User', required: true },
   permissions: { type: String, required: true, enum: USER_PERMISSIONS, default: 'client' }
 });
+
+userAliasSchema.methods.getScreenName = function() {
+  return this.username;
+};
 
 const UserAlias = mongoose.model('UserAlias', userAliasSchema);
 
@@ -92,17 +95,26 @@ const emailAliasSchema = Schema({
 
 const EmailAlias = UserAlias.discriminator('EmailAlias', emailAliasSchema);
 
+//dummy alias for testing.
 const dummyAliasSchema = Schema({
   student: { type: ObjectID, ref: 'Student', required: true }
 });
+
+
 
 const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
 
 //Add desired eduPerson fields here.
 //Remember to add these fields to the parser as well.
 const hakaAliasSchema = Schema({
+  email: { type: String, required: true },
+  name: { type: String },
   student: { type: ObjectID, ref: 'Student' },
 });
+
+hakaAliasSchema.methods.getScreenName = function() {
+  return `${ this.name } (${ this.username.split("@")[0] || "unactive" })`;
+};
 
 const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
 
