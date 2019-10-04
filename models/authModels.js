@@ -51,8 +51,17 @@ userSchema.methods.getGroups = function () {
 
 userSchema.methods.getGroupPermissions = function(id) {
 
-  const name = this.groups.find(g => g.group.toString() === id.toString()).permissions;
-  return { name, level: GROUP_PERMISSIONS.indexOf(name) };
+  if (this.userPermissions > 1)
+    return { name: GROUP_PERMISSIONS[GROUP_PERMISSIONS.length - 1], level: GROUP_PERMISSIONS.length - 1 }
+
+  const group = this.groups.find(g => g.group.toString() === id.toString());
+
+  if (group) {
+    const name = group.permissions;
+    return { name, level: GROUP_PERMISSIONS.indexOf(name) };
+  }
+
+  return null;
 };
 
 userSchema.methods.hasGroupPermissions = function(groupId, permissionLevel) {
