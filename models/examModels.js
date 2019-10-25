@@ -68,6 +68,9 @@ examSchema.methods.getLoginOptions = async function() {
 //Handles removal of exam documents.
 //NOTE: THIS IS DOCUMENT MIDDLEWARE.
 examSchema.pre('remove', { document: true }, async function(next) {
+  if (this.active)
+    return Promise.reject(Error("Exam is active"))
+    
   await this.populate('config').execPopulate();
 
   await this.config.remove();
