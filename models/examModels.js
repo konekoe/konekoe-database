@@ -70,7 +70,7 @@ examSchema.methods.getLoginOptions = async function() {
 examSchema.pre('remove', { document: true }, async function(next) {
   if (this.active)
     return Promise.reject(Error("Exam is active"))
-    
+
   await this.populate('config').execPopulate();
 
   await this.config.remove();
@@ -103,7 +103,7 @@ courseSchema.pre('remove', { document: true }, async function() {
 
   await this.populate('exams').execPopulate();
 
-  await Promise.all(this.exams.map(exam => exam.remove()));
+  await Exam.deleteMany({ $in: this.exams });
 });
 
 var Student = mongoose.model('Student', studentSchema);
