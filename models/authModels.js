@@ -78,6 +78,12 @@ userSchema.methods.updatePermissions = function(permissions) {
   }
 };
 
+userSchema.methods.removeAlias = function(id) {
+  this.aliases = this.aliases.filter(alias => alias.toString() !== id.toString());
+
+  return (this.aliases.length) ? this.save() : this.remove();
+};
+
 const User = mongoose.model('User', userSchema);
 
 
@@ -101,6 +107,13 @@ userAliasSchema.pre('save', { document: true }, async function() {
   await this.populate('parentUser').execPopulate();
 
   this.parentUser.updatePermissions(this.permissions);
+
+});
+
+userAliasSchema.pre('remove', { document: true }, async function() {
+  await this.populate('parentUser').execPopulate();
+
+  this.parentUser.removeAlias(this._id);
 
 });
 
