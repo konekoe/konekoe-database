@@ -71,6 +71,11 @@ userSchema.methods.hasGroupPermissions = function(groupId, permissionLevel) {
 
 };
 
+userSchema.methods.updatePermissions = function(permissions) {
+  if (USER_PERMISSIONS.indexOf(permissions) > USER_PERMISSIONS.indexOf(this.permissions))
+    this.permissions = permissions
+};
+
 const User = mongoose.model('User', userSchema);
 
 
@@ -94,7 +99,7 @@ userAliasSchema.pre('save', { document: true }, async function() {
   await this.populate('parentUser').execPopulate();
 
   console.log(this.permissions);
-  
+
   this.parentUser.updatePermissions(this.permissions);
 
 });
