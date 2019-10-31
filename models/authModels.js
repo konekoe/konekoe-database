@@ -90,6 +90,15 @@ userAliasSchema.virtual('userPermissions').get(function () {
   return { name: this.permissions, level: USER_PERMISSIONS.indexOf(this.permissions) };
 });
 
+userAliasSchema.pre('save', { document: true }, async function() {
+  await this.populate('parentUser').execPopulate();
+
+  console.log(this.permissions);
+  
+  this.parentUser.updatePermissions(this.permissions);
+
+});
+
 const UserAlias = mongoose.model('UserAlias', userAliasSchema);
 
 const localAliasSchema = Schema({
