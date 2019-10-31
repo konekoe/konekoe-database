@@ -87,7 +87,7 @@ userAliasSchema.methods.getScreenName = function() {
 };
 
 userAliasSchema.virtual('userPermissions').get(function () {
-  return { name: thie.permissions, level: USER_PERMISSIONS.indexOf(this.permissions) };
+  return { name: this.permissions, level: USER_PERMISSIONS.indexOf(this.permissions) };
 });
 
 const UserAlias = mongoose.model('UserAlias', userAliasSchema);
