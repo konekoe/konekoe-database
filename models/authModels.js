@@ -141,14 +141,6 @@ const localAliasSchema = Schema({
 
 const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 
-const localAliasSchema = Schema({
-  passwordHash: String,
-  passwordSalt: String,
-  permissions: { type: String, default: 'admin', enum: ['admin'] }
-});
-
-const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
-
 const emailAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
@@ -189,5 +181,6 @@ module.exports = {
   LocalAlias,
   HakaAlias,
   AuthOption,
-  EmailAlias
+  EmailAlias,
+  LinkedinAlias
 };
