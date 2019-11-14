@@ -119,6 +119,28 @@ userAliasSchema.pre('remove', { document: true }, async function() {
 
 const UserAlias = mongoose.model('UserAlias', userAliasSchema);
 
+const linkedinAliasSchema = Schema({
+  email: { type: String, required: true },
+  displayName: { type: String },
+  linkedinId: { type: String, required: true },
+  accessToken: { type: String, required: true },
+  refreshToken: { type: String, required: true }
+});
+
+linkedinAliasSchema.methods.getScreenName = function() {
+  return `${ this.displayName || this.email } (Linkedin)`;
+};
+
+const LinkedinAlias = UserAlias.discriminator('LinkedinAlias', linkedinAliasSchema);
+
+const localAliasSchema = Schema({
+  passwordHash: String,
+  passwordSalt: String,
+  permissions: { type: String, default: 'admin', enum: ['admin'] }
+});
+
+const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
+
 const localAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
