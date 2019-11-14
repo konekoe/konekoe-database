@@ -124,7 +124,7 @@ const linkedinAliasSchema = Schema({
   displayName: { type: String },
   linkedinId: { type: String, required: true },
   accessToken: { type: String, required: true },
-  refreshToken: { type: String, required: true }
+  refreshToken: { type: String }
 });
 
 linkedinAliasSchema.methods.getScreenName = function() {
