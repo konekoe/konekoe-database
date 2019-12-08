@@ -85,11 +85,17 @@ var examFileSchema = Schema({
   exam: { type: ObjectID, ref: 'Exam', required: true }
 });
 
+var examUrlSchema = Schema({
+  url: { type: String, required: true },
+  exam: { type: ObjectID, ref: 'Exam', required: true }
+});
+
 var studentSchema = Schema({
   studentId: { type: String, unique: true, required: true },
   answers: [{type: ObjectID, ref: 'ExamFile'}],
   syncs: [{type: ObjectID, ref: 'ExamFile'}],
-  screenshots: [{type: ObjectID, ref: 'ExamFile'}]
+  screenshots: [{type: ObjectID, ref: 'ExamFile'}],
+  urls: [{type: ObjectID, ref: 'ExamUrl'}]
 });
 
 var courseSchema = Schema({
@@ -110,8 +116,9 @@ var Student = mongoose.model('Student', studentSchema);
 var Course = mongoose.model('Course', courseSchema);
 var Exam = mongoose.model('Exam', examSchema);
 var ExamFile = mongoose.model('ExamFile', examFileSchema);
+var ExamUrl = mongoose.model('ExamUrl', examUrlSchema);
 var Config = mongoose.model('Config', configSchema);
 var File = mongoose.model('File', fileSchema);
 
 
-module.exports = {Student, Course, Exam, ExamFile, Config, File};
+module.exports = {Student, Course, Exam, ExamFile, Config, File, ExamUrl};
