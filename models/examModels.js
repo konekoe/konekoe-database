@@ -87,7 +87,8 @@ var examFileSchema = Schema({
 
 var examUrlSchema = Schema({
   url: { type: String, required: true },
-  exam: { type: ObjectID, ref: 'Exam', required: true }
+  exam: { type: ObjectID, ref: 'Exam', required: true },
+  timeStamp: { type: Date, default: Date.now }
 });
 
 var studentSchema = Schema({
