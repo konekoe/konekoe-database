@@ -8,7 +8,9 @@ const dbOptions =
                 user: process.env.DATABASE_USER,
                 pass: process.env.DATABASE_PASS,
                 useNewUrlParser: true,
-                useCreateIndex: true
+                useCreateIndex: true,
+                useUnifiedTopology: true,
+                serverSelectionTimeoutMS: 5000
               }
 
 const MongoConnection = (uri, options) => {
