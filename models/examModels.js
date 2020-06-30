@@ -114,13 +114,22 @@ courseSchema.pre('remove', { document: true }, async function() {
   await Exam.deleteMany({ $in: this.exams });
 });
 
-var Student = mongoose.model('Student', studentSchema);
-var Course = mongoose.model('Course', courseSchema);
-var Exam = mongoose.model('Exam', examSchema);
-var ExamFile = mongoose.model('ExamFile', examFileSchema);
-var ExamUrl = mongoose.model('ExamUrl', examUrlSchema);
-var Config = mongoose.model('Config', configSchema);
-var File = mongoose.model('File', fileSchema);
+module.exports = (conn) => {
+  const Student = conn.model('Student', studentSchema);
+  const Course = conn.model('Course', courseSchema);
+  const Exam = conn.model('Exam', examSchema);
+  const ExamFile = conn.model('ExamFile', examFileSchema);
+  const ExamUrl = conn.model('ExamUrl', examUrlSchema);
+  const Config = conn.model('Config', configSchema);
+  const File = conn.model('File', fileSchema);
 
-
-module.exports = {Student, Course, Exam, ExamFile, Config, File, ExamUrl};
+  return {
+    Student, 
+    Course, 
+    Exam, 
+    ExamFile, 
+    Config, 
+    File, 
+    ExamUrl 
+  };
+}

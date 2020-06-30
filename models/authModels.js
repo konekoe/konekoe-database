@@ -11,7 +11,6 @@ const authOptionSchema = Schema({
   formPage: { type: String, required: true }
 });
 
-const AuthOption = mongoose.model('AuthOption', authOptionSchema);
 
 const groupSchema = Schema({
   courses: [{ type: ObjectID, ref: 'Course' }],
@@ -25,7 +24,6 @@ groupSchema.pre('remove', { document: true }, async function() {
 
 });
 
-const Group = mongoose.model('Group', groupSchema);
 
 //This Schema is used to tie together documents associated with each login strategy.
 const userSchema = Schema({
@@ -84,8 +82,6 @@ userSchema.methods.removeAlias = function(id) {
   return (this.aliases.length) ? this.save() : this.remove();
 };
 
-const User = mongoose.model('User', userSchema);
-
 
 
 //An alias corresponds to a login method. Each alias has to have at least these properties;
@@ -117,15 +113,11 @@ userAliasSchema.pre('remove', { document: true }, async function() {
 
 });
 
-const UserAlias = mongoose.model('UserAlias', userAliasSchema);
-
 const localAliasSchema = Schema({
   passwordHash: String,
   passwordSalt: String,
   permissions: { type: String, default: 'admin', enum: ['admin'] }
 });
-
-const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
 
 const emailAliasSchema = Schema({
   passwordHash: String,
@@ -133,16 +125,10 @@ const emailAliasSchema = Schema({
   active: { type: Boolean, default: false, required: true }
 });
 
-const EmailAlias = UserAlias.discriminator('EmailAlias', emailAliasSchema);
-
 //dummy alias for testing.
 const dummyAliasSchema = Schema({
   student: { type: ObjectID, ref: 'Student', required: true }
 });
-
-
-
-const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
 
 //Add desired eduPerson fields here.
 //Remember to add these fields to the parser as well.
@@ -156,16 +142,30 @@ hakaAliasSchema.methods.getScreenName = function() {
   return `${ this.name } (${ this.username.split("@")[0] || "unactive" })`;
 };
 
-const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
+
+module.exports = (conn) => {
+  const AuthOption = conn.model('AuthOption', authOptionSchema);
+  const Group = conn.model('Group', groupSchema);
+  const User = conn.model('User', userSchema);
+  const UserAlias = conn.model('UserAlias', userAliasSchema);
+  const LocalAlias = UserAlias.discriminator('LocalAlias', localAliasSchema);
+  const EmailAlias = UserAlias.discriminator('EmailAlias', emailAliasSchema);
+  const DummyAlias = UserAlias.discriminator('DummyAlias', dummyAliasSchema);
+  const HakaAlias = UserAlias.discriminator('HakaAlias', hakaAliasSchema);
 
 
-module.exports = {
-  User,
-  Group,
-  UserAlias,
-  DummyAlias,
-  LocalAlias,
-  HakaAlias,
-  AuthOption,
-  EmailAlias
+
+
+  return { 
+    User,
+    Group,
+    UserAlias,
+    DummyAlias,
+    LocalAlias,
+    HakaAlias,
+    AuthOption,
+    EmailAlias
+  };
+
 };
+  
