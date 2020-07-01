@@ -13,10 +13,7 @@ const dbOptions =
               }
 
 const MongoConnection = (uri, options = dbOptions) => {
-  return mongoose.createConnection(uri, options)
-    .then(() => {
-      return mongoose.connection;
-    });
+  return mongoose.createConnection(uri, options);
 }
 
 module.exports = MongoConnection;
