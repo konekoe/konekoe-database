@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
-const { AuthOption } = require("./authModels.js");
+
+module.exports = (conn) => {
+
+const { AuthOption } = require("./authModels.js")(conn);
 
 var Schema = mongoose.Schema;
 var ObjectID = Schema.Types.ObjectId;
@@ -113,15 +116,14 @@ courseSchema.pre('remove', { document: true }, async function() {
 
   await Exam.deleteMany({ $in: this.exams });
 });
-
-module.exports = (conn) => {
-  const Student = conn.model('Student', studentSchema);
-  const Course = conn.model('Course', courseSchema);
-  const Exam = conn.model('Exam', examSchema);
-  const ExamFile = conn.model('ExamFile', examFileSchema);
-  const ExamUrl = conn.model('ExamUrl', examUrlSchema);
-  const Config = conn.model('Config', configSchema);
-  const File = conn.model('File', fileSchema);
+  
+  var Student = conn.model('Student', studentSchema);
+  var Course = conn.model('Course', courseSchema);
+  var Exam = conn.model('Exam', examSchema);
+  var ExamFile = conn.model('ExamFile', examFileSchema);
+  var ExamUrl = conn.model('ExamUrl', examUrlSchema);
+  var Config = conn.model('Config', configSchema);
+  var File = conn.model('File', fileSchema);
 
   return {
     Student, 
@@ -130,6 +132,6 @@ module.exports = (conn) => {
     ExamFile, 
     Config, 
     File, 
-    ExamUrl 
-  };
+    ExamUrl
+  }; 
 };
