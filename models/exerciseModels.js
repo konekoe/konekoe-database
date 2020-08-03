@@ -5,15 +5,20 @@ module.exports = (conn) => {
   var Schema = mongoose.Schema;
   var ObjectID = Schema.Types.ObjectId;
 
+  const exerciseVariantSchema = Schema({
+    name: { type: String, required: true },
+    description: { type: String },
+    files: [{ type: ObjectID, ref: "File" }],
+    paths: [{ type: String }]
+  });
+
   const exerciseSchema = Schema({
-    content: { type: String, required: true },
+    variants: [{ type: ObjectID, ref: "ExerciseVariant" }],
     points: { type: Number, default: 0 },
   });
 
   const examExerciseConfigSchema = Schema({
     exercises: [ { type: ObjectID, ref: "Exercise" } ],
-    useAll: { type: Boolean, default: true, required: true },
-    numPerInstance: Number
   });
 
   const exerciseSubmissionSchema = Schema({
@@ -34,12 +39,14 @@ module.exports = (conn) => {
   });
 
   const Exercise = conn.model("Exercise", exerciseSchema);
+  const ExerciseVariant = conn.model("ExerciseVariant", exerciseVariantSchema);
   const ExamExerciseConfig = conn.model("ExamExerciseConfig", examExerciseConfigSchema);
   const ExerciseSubmission = conn.model("ExerciseSubmission", exerciseSubmissionSchema);
   const StudentExerciseResult = conn.model("StudentExerciseResult", studentExerciseResultSchema);
   
   return {
     Exercise,
+    ExerciseVariant,
     ExamExerciseConfig,
     ExerciseSubmission,
     StudentExerciseResult
