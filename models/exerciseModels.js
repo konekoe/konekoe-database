@@ -7,6 +7,7 @@ module.exports = (conn) => {
 
   const exerciseVariantSchema = Schema({
     name: { type: String, required: true },
+    path: { type: String, default: "" },
     description: { type: String },
     files: [{ type: ObjectID, ref: "File" }],
     paths: [{ type: String }]
