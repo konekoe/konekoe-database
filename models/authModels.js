@@ -33,6 +33,7 @@ module.exports = (conn) => {
     permissions: { type: String, required: true, enum: USER_PERMISSIONS, default: 'client' }, //Highest level from aliases is chosen
     groups: [{ group: { type: ObjectID, ref: 'Group', required: true }, permissions: { type: String, required: true, enum: GROUP_PERMISSIONS, default: 'visitor' } }],
     aliases: [{ type: ObjectID, ref: 'UserAlias', required: true }],
+    student: { type: ObjectID, ref: 'Student' } // Reference to student object used for storing exam related information.
   });
 
   userSchema.virtual('userPermissions').get(function () {
