@@ -33,15 +33,13 @@ module.exports = (conn) => {
     submissions: [{ type: ObjectID, ref: "ExerciseSubmission" }]
   });
 
-  const variantSelectionSchema = Schema({
-    exercise: { type: ObjectID, ref: "Exercise", required: true },
-    variant: { type: ObjectID, ref: "ExerciseVariant", required: true }
-  });
-
   const studentExerciseResultSchema = Schema({
     student: { type: ObjectID, ref: "Student", required: true },
     exam: { type: ObjectID, ref: "Exam", required: true },
-    exercises: [{ type: variantSelectionSchema, required: true }],
+    exercises: [{
+      exercise: { type: ObjectID, ref: "Exercise", required: true },
+      variant: { type: ObjectID, ref: "ExerciseVariant", required: true }
+    }],
     submissions: { type: [submissionMapSchema], default: [] } // List of Exercise => [Submission] pairs
   });
 
