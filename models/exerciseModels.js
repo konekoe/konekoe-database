@@ -25,7 +25,8 @@ module.exports = (conn) => {
   const exerciseSubmissionSchema = Schema({
     points: { type: Number, required: true },
     submission: { type: String, required: true },
-    output: { type: String }
+    output: { type: String },
+    date: { type: Date, default: Date.now }
   });
 
   const submissionMapSchema = Schema({
