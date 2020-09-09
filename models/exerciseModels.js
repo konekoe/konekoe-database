@@ -20,6 +20,7 @@ module.exports = (conn) => {
 
   const examExerciseConfigSchema = Schema({
     exercises: [ { type: ObjectID, ref: "Exercise" } ],
+    port: { type: Number }
   });
 
   const exerciseSubmissionSchema = Schema({
