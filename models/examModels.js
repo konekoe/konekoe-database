@@ -50,6 +50,7 @@ var examSchema = Schema({
   attendants: [{ type: ObjectID, ref: "Student" }],
   config: { type: ObjectID, ref: "Config", required: true },
   startDate: { type: Date, required: true},
+  exercisePort: Number,
   wsPort: Number,
   httpPort: Number,
   ip: String,
