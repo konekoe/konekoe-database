@@ -99,6 +99,7 @@ var examUrlSchema = Schema({
 
 var studentSchema = Schema({
   studentId: { type: String, unique: true, required: true },
+  studentNumber: { type: String, required: true, default: "UNREGISTERED" },
   answers: [{type: ObjectID, ref: "ExamFile"}],
   syncs: [{type: ObjectID, ref: "ExamFile"}],
   screenshots: [{type: ObjectID, ref: "ExamFile"}],
