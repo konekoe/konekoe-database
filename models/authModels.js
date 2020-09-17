@@ -139,6 +139,8 @@ module.exports = (conn) => {
   const hakaAliasSchema = Schema({
     email: { type: String, required: true },
     name: { type: String },
+    username: { type: String, unique: true },
+    studentNumber: { type: String },
     student: { type: ObjectID, ref: 'Student' },
   });
 
