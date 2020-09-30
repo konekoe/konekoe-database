@@ -37,6 +37,7 @@ module.exports = (conn) => {
   const studentExerciseResultSchema = Schema({
     student: { type: ObjectID, ref: "Student", required: true },
     exam: { type: ObjectID, ref: "Exam", required: true },
+    exerciseSet: { type: ObjectID, ref: "ExamExerciseConfig", required: true },
     exercises: [{
       exercise: { type: ObjectID, ref: "Exercise", required: true },
       variant: { type: ObjectID, ref: "ExerciseVariant", required: true }
