@@ -73,5 +73,6 @@ const clearData = async (connections) => Promise.all(connections.map(clearDataSi
 
 module.exports = {
   MongoConnection,
-  closeConnections
+  closeConnections,
+  clearData
 };
