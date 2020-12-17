@@ -19,8 +19,6 @@ const dbOptions =
 
 // Support creating a mock for testing.
 const MongoConnection = (mongod) ?  async (uri, options = dbOptions) => {
-  console.log("hello");
-
   const testOptions = { 
     ...options,
     auth: null,
@@ -30,11 +28,50 @@ const MongoConnection = (mongod) ?  async (uri, options = dbOptions) => {
 
   const testUri = await mongod.getUri();
 
-  return mongoose.createConnection(testUri, testOptions);
+  return 
 }
 : 
 async (uri, options = dbOptions) => {
   return mongoose.createConnection(uri, options);
 }
 
-module.exports = MongoConnection;
+// Close a single connection.
+// If this is a testing connection, drop the database entirely.
+const closeConnection = async (connection) => {
+  try {
+    if (mongod)
+      await connection.dropDatabase();
+    
+    await connection.close();
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const closeConnections = async (connections) => {
+  try {
+    await Promise.all(connections.map(closeConnection));
+
+    if (mongod)
+      await mongod.stop();
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+
+// Data can be cleared for testing purposes.
+const clearDataSingle = async (connection) => {
+  for (const key in connection.collections) {
+    await collections[key].deleteMany();
+  }
+};
+
+const clearData = async (connections) => Promise.all(connections.map(clearDataSingle));
+
+module.exports = {
+  MongoConnection,
+  closeConnections
+};
