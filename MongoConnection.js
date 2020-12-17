@@ -28,7 +28,7 @@ const MongoConnection = (mongod) ?  async (uri, options = dbOptions) => {
 
   const testUri = await mongod.getUri();
 
-  return 
+  return mongoose.createConnection(testUri, testOptions);
 }
 : 
 async (uri, options = dbOptions) => {
