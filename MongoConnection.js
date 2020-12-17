@@ -1,4 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
+if (process.env.NODE_ENV === "test") {
+  var { MongoMemoryServer } = require("mongodb-memory-server");
+  var mongod = new MongoMemoryServer();
+}
 
 //Connect to database
 const dbOptions =
@@ -10,9 +15,25 @@ const dbOptions =
                 useCreateIndex: true,
                 useUnifiedTopology: true,
                 serverSelectionTimeoutMS: 5000
-              }
+              };
 
-const MongoConnection = (uri, options = dbOptions) => {
+// Support creating a mock for testing.
+const MongoConnection = (mongod) ?  async (uri, options = dbOptions) => {
+  console.log("hello");
+
+  const testOptions = { 
+    ...options,
+    auth: null,
+    pass: null,
+    user: null
+  };
+
+  const testUri = await mongod.getUri();
+
+  return mongoose.createConnection(testUri, testOptions);
+}
+: 
+async (uri, options = dbOptions) => {
   return mongoose.createConnection(uri, options);
 }
 
