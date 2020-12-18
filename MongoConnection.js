@@ -64,7 +64,8 @@ const closeConnections = async (connections) => {
 
 // Data can be cleared for testing purposes.
 const clearDataSingle = async (connection) => {
-  for (const key in connection.collections) {
+  const { collections } = connection;
+  for (const key in collections) {
     await collections[key].deleteMany();
   }
 };
